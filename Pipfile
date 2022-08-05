@@ -10,6 +10,7 @@ flask-sqlalchemy = "*"
 python-dotenv = "*"
 gunicorn = "*"
 psycopg2 = "*"
+colorama = "*"
 
 [dev-packages]
 
