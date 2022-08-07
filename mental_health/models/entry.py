@@ -13,6 +13,9 @@ class Entry(db.Model):
     appetite = db.Column(db.Integer, nullable=False)
     concentration = db.Column(db.Integer, nullable=False)
     diet = db.Column(db.String(200))
-    enterteinment = db.Column(db.String(200))
+    enter = db.Column(db.String(200))
     social = db.Column(db.String(200))
+
+    def __repr__(self):
+        return 'Entry ' + str(self.id)
 

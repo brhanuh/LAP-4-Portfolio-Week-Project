@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block headers %}
+{% endblock %}
+
+{% block title %}Database{% endblock %}
+{% block content %}
+    <h1>Kyle's List</h1>
+    <em>You probably won't get murdered.</em>
+    <hr />
+    <ul>
+        {% for entry in all_entries %}
+            <li class="entry">
+                <h5></h2>
+                <h5> Mood : {{ entry.mood }} , Energy : {{ entry.energy }}, Depression : {{ entry.depression }},
+                    irritability : {{ entry.irritability }}, Motivation : {{ entry.motivation }}, Stress : {{ entry.stress }}
+                    Appetite : {{ entry.appetite }}, Concentration : {{ entry.concentration }}, Diet : {{ entry.diet }},
+                    Enterteinment: {{ entry.enter }}, Social : {{ entry.social }} </h5>
+            </li>
+        {% endfor %}
+    </ul>
+    <hr />
+    <h2>Add new listing</h2>
+    <form method="POST">
+        <fieldset>
+            <label for="title-input">Title: </label>
+            <input type="text" id="title-input" name="title" required />
+        </fieldset>
+        <fieldset>
+            <label for="email-input">Email: </label>
+            <input type="email" id="email-input" name="email" required />
+        </fieldset>
+        <fieldset class="full-width">
+            <label for="body-input">Text: </label>
+            <textarea id="body-input" name="body" required></textarea>
+            <input type="submit" value="Submit">
+        </fieldset>
+    </form>
+{% endblock %}
