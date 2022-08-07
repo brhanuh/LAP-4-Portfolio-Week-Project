@@ -11,7 +11,7 @@
     <ul>
         {% for entry in all_entries %}
             <li class="entry">
-                <h5></h2>
+                <h5>Date Created : {{ entry.date_posted}}</h5>
                 <h5> Mood : {{ entry.mood }} , Energy : {{ entry.energy }}, Depression : {{ entry.depression }},
                     irritability : {{ entry.irritability }}, Motivation : {{ entry.motivation }}, Stress : {{ entry.stress }}
                     Appetite : {{ entry.appetite }}, Concentration : {{ entry.concentration }}, Diet : {{ entry.diet }},

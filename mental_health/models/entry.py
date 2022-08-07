@@ -3,7 +3,7 @@ from ..database.db import db, datetime
 class Entry(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_posted = db.Column(db.String(200), nullable=False)
     mood = db.Column(db.Integer, nullable=False)
     energy = db.Column(db.Integer, nullable=False)
     depression = db.Column(db.Integer, nullable=False)
