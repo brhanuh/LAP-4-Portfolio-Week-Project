@@ -8,7 +8,7 @@ from flask_cors import CORS
 from .database.db import db
 from .routes.main import main_routes
 from .routes.auth import auth_routes
-# from .routes.auth import token_route
+from .routes.auth import token_route
 from .routes.auth import login_route
 
 # load environment
@@ -39,7 +39,7 @@ db.init_app(app)
 
 app.register_blueprint(main_routes)
 app.register_blueprint(auth_routes)
-# app.register_blueprint(token_route)
+app.register_blueprint(token_route)
 app.register_blueprint(login_route)
 
 ## Main
