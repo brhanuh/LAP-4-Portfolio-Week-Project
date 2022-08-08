@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block headers %}
+{% endblock %}
+
+{% block title %}Database{% endblock %}
+{% block content %}
+    <h1>statistics</h1>
+    <em>You probably won't get murdered.</em>
+    <hr />
+    <ul>
+        {% for entry in all_entries %}
+            <li class="entry">
+                <h5> date posted : {{entry.date_posted}}</h5>
+                <h5> Mood : {{ entry.mood }} , Energy : {{ entry.energy }}, Depression : {{ entry.depression }},
+                    irritability : {{ entry.irritability }}, Motivation : {{ entry.motivation }}, Stress : {{ entry.stress }}
+                    Appetite : {{ entry.appetite }}, Concentration : {{ entry.concentration }}, Diet : {{ entry.diet }},
+                    Enterteinment: {{ entry.enterteiment }}, Social : {{ entry.social }} </h5>
+            </li>
+            
+        {% endfor %}
+        <h5>{{all_entries|length}}</h5>
+        <hr>
+        <hr>
+        <h5>Total Avarage: {{avarage}}% </h5>
+    </ul>
+{% endblock %}
