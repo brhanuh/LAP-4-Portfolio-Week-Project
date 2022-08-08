@@ -1,5 +1,3 @@
-
-
 from mental_health import db
 from mental_health.models.user import User
 
