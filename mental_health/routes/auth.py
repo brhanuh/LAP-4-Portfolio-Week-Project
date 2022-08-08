@@ -9,6 +9,7 @@ from ..database.db import db
 from flask_jwt_extended import create_access_token, unset_jwt_cookies
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from flask_jwt_extended import jwt_required
+from flask_login import login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_routes = Blueprint("auth", __name__)
@@ -29,36 +30,52 @@ def register():
         elif user:
             return 'username already exists'
         else:
-            new_user = User(username=username, email=email, hash_password=password)
+            hashed_pass = generate_password_hash(password, method='sha256')
+            new_user = User(username=username, email=email, hash_password=hashed_pass)
             db.session.add(new_user)
             db.session.commit()
             return 'User Created'
     
     if request.method == 'GET':
-        user = User.query.all()
+        users = User.query.all()
 
-        all_users = []
-        return (
-            all_users.append({
-                "username": user.username,
-                "email": user.email,
-                "password": user.hash_password,
-            })
-        )
+        all_data =[]
+        for user in users:
+            all_data.append({
+                "id": user.id, 
+                "username": user.username, 
+                "email": user.email, 
+                "password":user.hash_password})
+        return all_data
 
 
 
 
 @auth_routes.route("/login", methods=["POST"])
 def login():
-    return "Hello login"
+    if request.method == 'POST':
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        user = User.query.filter_by(username=username).first()
+
+        
+        #hash password first and then the userinput password
+        if check_password_hash(user.hash_password, password):
+            login_user(user, remember=True)
+        else:
+            return 'incorrect password'
+
+        
+    
         
 
 
 
 @auth_routes.route("/logout", methods = ["POST"])
 def logout():
-    return "Hello logout"
+    logout_user()
+    return 'user logged out'
     
 
    
