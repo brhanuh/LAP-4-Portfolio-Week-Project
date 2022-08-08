@@ -1,8 +1,8 @@
 from ..database.db import db
 from uuid import uuid4
 
-def get_uuid():
-    return uuid4().hex
+# def get_uuid():
+#     return uuid4().hex
 
 class User(db.Model):
 
