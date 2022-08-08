@@ -11,7 +11,7 @@ def getTotalEntries():
 def getAvarage(targetFeeling, level):
     if targetFeeling != " " or level != " ":
         try:
-            feeling = getTargetFeeling(targetFeeling)
+            feeling = getTargetData(targetFeeling)
             totalEntries = Entry.query.count()
             target = Entry.query.filter(feeling == level).count()
             totalAvarage = (target / totalEntries) * 100
@@ -22,7 +22,7 @@ def getAvarage(targetFeeling, level):
     else:
         print("one or more args are empty")
 
-def getTargetFeeling(targetFeeling):
+def getTargetData(targetFeeling):
 
     if targetFeeling != " ":
         match targetFeeling:
@@ -48,16 +48,19 @@ def getTargetFeeling(targetFeeling):
                 return Entry.enter
             case "social":
                 return Entry.social
+            case "date_posted":
+                return Entry.date_posted
             case _:
                 return Entry.mood
     else:
         print("error arg empty")
         
-def getTargetDate(targetDate):
+def getTargetQuery(target, value):
 
-    if targetDate != " ":
+    if target != " ":
+        targetData = getTargetData(target)
         try:
-            target = Entry.query.filter(Entry.date_posted ==  targetDate ).all()
+            target = Entry.query.filter(targetData ==  value).all()
             return target
         except:
             print("problem retriving date from database")

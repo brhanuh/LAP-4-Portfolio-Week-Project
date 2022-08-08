@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template
 from ..database.db import db, datetime
 from ..models.user import User
 from ..models.entry import Entry
-from ..scripts.statistics import getTotalEntries, getAvarage, getTargetDate
+from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage
 from werkzeug import exceptions
 
 main_routes = Blueprint("main", __name__)
@@ -44,20 +44,20 @@ def get_all_entries():
     except:
         print("Was not possible to retreive all entries")
 
-@main_routes.route("/entry/<date>", methods=["GET"])   # for now i retrieving specific date
-def get_entry(date):
+@main_routes.route("/entry/<target>/<value>", methods=["GET"])   # for now i retrieving specific date
+def get_entry(target, value):
     try:
-        entries = getTargetDate(date)
+        entries = getTargetQuery(target,value)
         return render_template("entriesdate.html", all_entries=entries)
     except:
         print("error occured when retriving specific date")
 
-@main_routes.route("/stats", methods=["GET"])
-def get_statistics():
+@main_routes.route("/stats/<target>/<value>", methods=["GET"])
+def get_statistics(target, value):
 
     try:
         all_entries = getTotalEntries()
-        totalAvarage = getAvarage("mood", 2)
+        totalAvarage = getAvarage(target, value)
         return render_template("statistics.html", all_entries=all_entries, avarage=totalAvarage)
     except:
         print("error getting requesting statistics")
