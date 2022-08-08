@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from os import environ
 from flask import Flask, render_template, request
+from datetime import timedelta
 from flask_jwt_extended import JWTManager
 
 from flask_cors import CORS
@@ -8,8 +9,7 @@ from flask_cors import CORS
 from .database.db import db
 from .routes.main import main_routes
 from .routes.auth import auth_routes
-from .routes.auth import token_route
-from .routes.auth import login_route
+# from .routes.auth import login_route
 
 # load environment
 load_dotenv()
@@ -24,6 +24,7 @@ if 'postgres:' in database_uri:
 app = Flask(__name__)
 
 app.config["JWT_SECRET_KEY"] = "dakzbakz12345tok"  # Change this!
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 jwt = JWTManager(app)
 
 app.config.update(
@@ -39,8 +40,7 @@ db.init_app(app)
 
 app.register_blueprint(main_routes)
 app.register_blueprint(auth_routes)
-app.register_blueprint(token_route)
-app.register_blueprint(login_route)
+# app.register_blueprint(login_route)
 
 ## Main
 
