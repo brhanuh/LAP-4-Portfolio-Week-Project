@@ -69,7 +69,7 @@ def register():
                 "username": user.username, 
                 "email": user.email, 
                 "password":user.hash_password})
-            return all_data
+        return all_data
                    
                
             
