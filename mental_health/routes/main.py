@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, jsonify
 from ..database.db import db, datetime
 from ..models.user import User
 from ..models.entry import Entry, EntryEncoder
@@ -12,18 +12,19 @@ main_routes = Blueprint("main", __name__)
 def new_entry():
 
     try:
+        data = request.get_json()
         date = datetime.strftime(datetime.today(), "%d-%m-%Y")
-        mood = request.form["mood"]
-        energy = request.form["energy"]
-        depression = request.form["depression"]
-        irritability = request.form["irritability"]
-        motivation = request.form["motivation"]
-        stress = request.form["stress"]
-        appetite = request.form["appetite"]
-        concentration = request.form["concentration"]
-        diet = request.form["diet"]
-        enter = request.form["enter"]
-        social = request.form["social"]
+        mood = data["mood"]
+        energy = data["energy"]
+        depression = data["depression"]
+        irritability = data["irritability"]
+        motivation = data["motivation"]
+        stress = data["stress"]
+        appetite = data["appetite"]
+        concentration = data["concentration"]
+        diet = data["diet"]
+        enter = data["enter"]
+        social = data["social"]
 
         new_entry = Entry(date_posted=date, mood=mood, energy=energy,
         depression=depression, irritability=irritability, motivation=motivation,
