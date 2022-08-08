@@ -14,7 +14,7 @@ login_route = Blueprint("login", __name__)
 
 # Creating a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
-@token_route.route("/token", methods=["POST"])
+@token_route.route("/login", methods=["POST"])
 def token():
     if request.method == "POST":
         username = request.json.get("username", None)
