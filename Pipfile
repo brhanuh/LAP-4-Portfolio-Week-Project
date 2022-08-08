@@ -11,6 +11,8 @@ python-dotenv = "*"
 gunicorn = "*"
 psycopg2 = "*"
 colorama = "*"
+flask-jwt-extended = "*"
+bcrypt = "*"
 
 [dev-packages]
 

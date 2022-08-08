@@ -79,3 +79,6 @@ def handle_500(err):
     return {'message': f"SERVER ERROR,  {err}"}, 500
 
 
+@main_routes.route("/", methods=["GET"])
+def index():
+    return {"name": "Hello there"}
