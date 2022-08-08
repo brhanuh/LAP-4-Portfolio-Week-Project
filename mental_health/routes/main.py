@@ -7,18 +7,6 @@ from werkzeug import exceptions
 
 main_routes = Blueprint("main", __name__)
 
-@main_routes.route("/", methods=["GET"])
-def index():
-    return "Databse "
-
-@main_routes.route("/register", methods=["GET", "POST"])
-def register():
-    return "Registering"
-
-@main_routes.route("/login", methods=["GET", "POST"])
-def login():
-    return "Login in"
-
 @main_routes.route("/new_entry", methods=["POST"])
 def new_entry():
 
@@ -36,9 +24,9 @@ def new_entry():
         enter = request.form["enter"]
         social = request.form["social"]
 
-        new_entry = Entry(date_posted=date, mood=mood, energy=energy, depression=depression,
-        irritability=irritability, motivation=motivation, stress=stress,
-        appetite=appetite, concentration=concentration, diet=diet,
+        new_entry = Entry(date_posted=date, mood=mood, energy=energy,
+        depression=depression, irritability=irritability, motivation=motivation,
+        stress=stress, appetite=appetite, concentration=concentration, diet=diet,
         enter=enter, social=social)
 
         db.session.add(new_entry)
