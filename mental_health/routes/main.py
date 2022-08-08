@@ -1,7 +1,8 @@
+import json
 from flask import Blueprint, request, render_template
 from ..database.db import db, datetime
 from ..models.user import User
-from ..models.entry import Entry
+from ..models.entry import Entry, EntryEncoder
 from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage
 from werkzeug import exceptions
 
@@ -39,8 +40,11 @@ def new_entry():
 @main_routes.route("/entries", methods=["GET"])
 def get_all_entries():
     try:
+
         all_entries = Entry.query.all()
-        return render_template("index.html", all_entries=all_entries)
+        jsonified_d = json.dumps(all_entries, cls=EntryEncoder, indent=4)
+        return jsonified_d
+        
     except:
         print("Was not possible to retreive all entries")
 
@@ -48,7 +52,8 @@ def get_all_entries():
 def get_entry(target, value):
     try:
         entries = getTargetQuery(target,value)
-        return render_template("entriesdate.html", all_entries=entries)
+        jsonified_d = json.dumps(entries, cls=EntryEncoder, indent=4)
+        return jsonified_d
     except:
         print("error occured when retriving specific date")
 
@@ -56,9 +61,9 @@ def get_entry(target, value):
 def get_statistics(target, value):
 
     try:
-        all_entries = getTotalEntries()
         totalAvarage = getAvarage(target, value)
-        return render_template("statistics.html", all_entries=all_entries, avarage=totalAvarage)
+        jsonified_d = f'{{"level of {target} " : {value}, " total" : {totalAvarage}}}'
+        return jsonified_d
     except:
         print("error getting requesting statistics")
 
