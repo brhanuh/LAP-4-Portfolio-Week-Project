@@ -3,6 +3,7 @@ from ..database.db import db, datetime
 
 class Entry(db.Model):
 
+    user = db.Column(db.String(100), nullable=False)
     id = db.Column(db.Integer, primary_key=True)
     date_posted = db.Column(db.String(200), nullable=False)
     mood = db.Column(db.Integer, nullable=False)
@@ -23,7 +24,7 @@ class Entry(db.Model):
 class EntryEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Entry):
-            return {'date_posted' : o.date_posted, 'mood' : o.mood, 'energy' : o.energy,
+            return {'user' : o.user, 'date_posted' : o.date_posted, 'mood' : o.mood, 'energy' : o.energy,
             'depression' : o.depression, 'irritability' : o.irritability, 'motivation' : o.motivation,
             'stress' : o.stress, 'appetatite' : o.appetite, 'concentration' : o.concentration, 'diet' : o.diet,
             'enter' : o.enter, 'social' : o.social}
