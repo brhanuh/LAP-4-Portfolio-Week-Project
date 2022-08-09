@@ -1,6 +1,5 @@
 import json
 from flask import Blueprint, request, jsonify
-import bcrypt
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.exc import IntegrityError
@@ -9,7 +8,7 @@ from ..database.db import db
 from flask_jwt_extended import create_access_token, unset_jwt_cookies
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from flask_jwt_extended import jwt_required
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_routes = Blueprint("auth", __name__)
@@ -69,17 +68,18 @@ def login():
         return 'no such user'
         
     
-@auth_routes.route("/logout", methods=["POST"])
-def logout():
-    response = jsonify({"msg": "logout successful"})
-    unset_jwt_cookies(response)
-    return response
+# @auth_routes.route("/logout", methods=["POST"])
+# def logout():
+#     response = jsonify({"msg": "logout successful"})
+#     unset_jwt_cookies(response)
+#     return response
 
 # @auth_routes.route("/logout", methods = ["POST"])
+# @logout_user
 # def logout():
 #     logout_user()
 #     return 'user logged out'
-#     #redirect(url_for(""))
+# #     #redirect(url_for(""))
     
 
    
