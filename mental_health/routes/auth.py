@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 import bcrypt
 from datetime import datetime, timedelta, timezone
 
@@ -61,31 +61,39 @@ def login():
         if user:
             if not check_password_hash(user.hash_password, password):
                 return 'incorrect password'
-            login_user(user, remember=True)
-            return 'user logged in'  
+            # login_user(user, remember=True)
+            # return 'user logged in' 
+            access_token = create_access_token(identity=username)
+            response = {"access_token":access_token}
+            return response 
         return 'no such user'
         
     
-        
-@auth_routes.route("/logout", methods = ["POST"])
-@login_required
+@auth_routes.route("/logout", methods=["POST"])
 def logout():
-    logout_user()
-    return 'user logged out'
-    #redirect(url_for(""))
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
+
+# @auth_routes.route("/logout", methods = ["POST"])
+# def logout():
+#     logout_user()
+#     return 'user logged out'
+#     #redirect(url_for(""))
     
 
    
 
 ##### experimenting with a protected endpoint #####             
 
-# @auth_routes.route('/profile')
-# def my_profile():
-#     response_body = {
-#         "name": "Nagato",
-#         "about" :"Hello! I'm a full stack developer that loves python and javascript"
-#     }
+@auth_routes.route('/profile')
+@jwt_required()
+def my_profile():
+    response_body = {
+        "name": "Nagato",
+        "about" :"Hello! I'm a full stack developer that loves python and javascript"
+    }
 
-#     return response_body 
+    return response_body 
 
 

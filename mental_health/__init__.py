@@ -11,7 +11,6 @@ from flask_cors import CORS
 from .database.db import db
 from .routes.main import main_routes
 from .routes.auth import auth_routes
-# from .routes.auth import login_route
 
 # load environment
 load_dotenv()
