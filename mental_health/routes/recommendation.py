@@ -8,7 +8,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 recom_route = Blueprint("recommendation", __name__)
 
-
+#logged in user is able to create a post
 @recom_route.route("/posts", methods=["POST","GET"])
 @jwt_required()
 def create_post():
