@@ -64,7 +64,7 @@ def login():
             # login_user(user, remember=True)
             # return 'user logged in' 
             access_token = create_access_token(identity=username)
-            response = {"access_token":access_token}
+            response = {"access_token":access_token, "user_id": user.id, "username": user.username}
             return response 
         return 'no such user'
         
