@@ -4,13 +4,15 @@ from flask import Flask, render_template, request
 from datetime import timedelta
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
-from .models.user import User
+from .models.user import User, Post
+
 
 from flask_cors import CORS
 
 from .database.db import db
 from .routes.main import main_routes
 from .routes.auth import auth_routes
+from .routes.recommendation import recom_route
 
 # load environment
 load_dotenv()
@@ -41,6 +43,7 @@ db.init_app(app)
 
 app.register_blueprint(main_routes)
 app.register_blueprint(auth_routes)
+app.register_blueprint(recom_route, url_prefix = '/recommendations')
 
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"

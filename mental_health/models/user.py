@@ -1,4 +1,6 @@
 from ..database.db import db
+from time import timezone
+from sqlalchemy.sql import func
 from uuid import uuid4
 from flask_login import UserMixin
 
@@ -6,11 +8,19 @@ from flask_login import UserMixin
 # def get_uuid():
 #     return uuid4().hex
 
-class User(db.Model, UserMixin):
+class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, unique=True)
-    username = db.Column(db.String(50), unique=True)
-    email = db.Column(db.String(100), unique=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
     hash_password = db.Column(db.String(128), nullable=False)
+    posts = db.relationship('Post', backref='user')
 
 
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+    type = db.Column(db.String(100), default="")
+    source = db.Column(db.String(100), default="")
+    text = db.Column(db.String(100), default="")
+    date_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    creator = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
