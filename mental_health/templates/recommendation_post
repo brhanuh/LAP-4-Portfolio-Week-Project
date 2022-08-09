@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block headers %}
+{% endblock %}
+
+{% block title %}Database{% endblock %}
+{% block content %}
+    <h1>Kyle's List</h1>
+    <em>You probably won't get murdered.</em>
+    <hr />
+    <hr />
+    <h2>Add new POST</h2>
+    <form method="POST">
+        <fieldset>
+            <label for="title-input">type: </label>
+            <input type="text" id="title-input" name="type" required />
+        </fieldset>
+        <fieldset>
+            <label for="email-input">Source: </label>
+            <input type="text" id="email-input" name="type" required />
+        </fieldset>
+        <fieldset class="full-width">
+            <label for="body-input">Text: </label>
+            <textarea id="body-input" name="body" required></textarea>
+            <input type="submit" value="Submit">
+        </fieldset>
+    </form>
+{% endblock %}
