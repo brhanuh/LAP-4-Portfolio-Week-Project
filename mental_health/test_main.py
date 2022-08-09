@@ -1,4 +1,8 @@
 import json, requests
+from flask_jwt_extended import create_access_token, unset_jwt_cookies
+from flask_jwt_extended import get_jwt_identity, get_jwt
+from flask_jwt_extended import jwt_required
+from os import access
 from urllib import response
 import unittest
 from . import app
@@ -6,13 +10,18 @@ from . import app
 class Flask(unittest.TestCase):
 
     API_URL = ""
-
-    def test_index(self):
+    
+    
+    def test_my_profile(self):
         tester = app.test_client(self)
-        response = tester.get("/")
+        access_token = create_access_token('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY2MDA1MjY1NiwianRpIjoiMDFiODM5ZWYtNzRlZS00NDBlLWJiZjktYmI1MGZiMzAwNjIzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImhvbGFob3BlIiwibmJmIjoxNjYwMDUyNjU2LCJleHAiOjE2NjAwNTYyNTZ9.HG6tIyR3v8X4eSsszAyLv7Qe2LvPizOpM0g8edbF6h8')
+        headers = {
+            'authorization': 'Bearer'.format(access_token)
+        }
+        response = tester.get("/profile")
         statuscode = response.status_code
         self.assertEqual(statuscode, 200)
-        self.assertTrue(b'db' in response.data)
+        self.assertTrue(b'Nagato' in response.data)
 
     def test_get_entries(self):
         tester = app.test_client(self)
