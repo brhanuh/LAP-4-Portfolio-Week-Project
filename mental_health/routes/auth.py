@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, jsonify, request, abort, render_template
+from flask import Blueprint, request
 import bcrypt
 from datetime import datetime, timedelta, timezone
 
@@ -29,12 +29,12 @@ def register():
             return 'email already exists'
         elif user:
             return 'username already exists'
-        else:
-            hashed_pass = generate_password_hash(password, method='sha256')
-            new_user = User(username=username, email=email, hash_password=hashed_pass)
-            db.session.add(new_user)
-            db.session.commit()
-            return 'User Created'
+
+        hashed_pass = generate_password_hash(password, method='sha256')
+        new_user = User(username=username, email=email, hash_password=hashed_pass)
+        db.session.add(new_user)
+        db.session.commit()
+        return 'User Created'
     
     if request.method == 'GET':
         users = User.query.all()
@@ -49,8 +49,6 @@ def register():
         return all_data
 
 
-
-
 @auth_routes.route("/login", methods=["POST"])
 def login():
     if request.method == 'POST':
@@ -59,23 +57,22 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
-        
         #hash password first and then the userinput password
-        if check_password_hash(user.hash_password, password):
+        if user:
+            if not check_password_hash(user.hash_password, password):
+                return 'incorrect password'
             login_user(user, remember=True)
-        else:
-            return 'incorrect password'
-
+            return 'user logged in'  
+        return 'no such user'
         
     
         
-
-
-
 @auth_routes.route("/logout", methods = ["POST"])
+@login_required
 def logout():
     logout_user()
     return 'user logged out'
+    #redirect(url_for(""))
     
 
    
@@ -83,7 +80,6 @@ def logout():
 ##### experimenting with a protected endpoint #####             
 
 # @auth_routes.route('/profile')
-# @jwt_required()
 # def my_profile():
 #     response_body = {
 #         "name": "Nagato",
