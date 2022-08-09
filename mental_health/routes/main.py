@@ -5,6 +5,7 @@ from ..models.user import User
 from ..models.entry import Entry, EntryEncoder
 from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage
 from werkzeug import exceptions
+from flask_jwt_extended import jwt_required
 
 main_routes = Blueprint("main", __name__)
 
@@ -72,6 +73,15 @@ def get_statistics(target, value):
 def get_recommendations():
     return "get recommendations from the users who are feeling same way as you"
 
+
+
+# @main_routes.route("/recommentdations/<int:id>")
+# def post_recommendation(id):
+#     recommendation = 
+
+
+
+
 @main_routes.errorhandler(exceptions.NotFound)
 def handle_404(err):
     return {'message': f'Oops! {err}'}, 404
@@ -85,6 +95,15 @@ def handle_500(err):
     return {'message': f"SERVER ERROR,  {err}"}, 500
 
 
-@main_routes.route("/", methods=["GET"])
-def index():
-    return {"name": "Hello there"}
+
+
+
+@main_routes.route('/profile')
+@jwt_required()
+def my_profile():
+    response_body = {
+        "name": "Nagato",
+        "about" :"Hello! I'm a full stack developer that loves python and javascript"
+    }
+
+    return response_body    
