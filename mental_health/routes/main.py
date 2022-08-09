@@ -1,7 +1,8 @@
-from flask import Blueprint, request, render_template
+import json
+from flask import Blueprint, request, render_template, jsonify
 from ..database.db import db, datetime
 from ..models.user import User
-from ..models.entry import Entry
+from ..models.entry import Entry, EntryEncoder
 from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage
 from werkzeug import exceptions
 from flask_jwt_extended import jwt_required
@@ -12,18 +13,19 @@ main_routes = Blueprint("main", __name__)
 def new_entry():
 
     try:
+        data = request.get_json()
         date = datetime.strftime(datetime.today(), "%d-%m-%Y")
-        mood = request.form["mood"]
-        energy = request.form["energy"]
-        depression = request.form["depression"]
-        irritability = request.form["irritability"]
-        motivation = request.form["motivation"]
-        stress = request.form["stress"]
-        appetite = request.form["appetite"]
-        concentration = request.form["concentration"]
-        diet = request.form["diet"]
-        enter = request.form["enter"]
-        social = request.form["social"]
+        mood = data["mood"]
+        energy = data["energy"]
+        depression = data["depression"]
+        irritability = data["irritability"]
+        motivation = data["motivation"]
+        stress = data["stress"]
+        appetite = data["appetite"]
+        concentration = data["concentration"]
+        diet = data["diet"]
+        enter = data["enter"]
+        social = data["social"]
 
         new_entry = Entry(date_posted=date, mood=mood, energy=energy,
         depression=depression, irritability=irritability, motivation=motivation,
@@ -40,8 +42,11 @@ def new_entry():
 @main_routes.route("/entries", methods=["GET"])
 def get_all_entries():
     try:
+
         all_entries = Entry.query.all()
-        return render_template("index.html", all_entries=all_entries)
+        jsonified_d = json.dumps(all_entries, cls=EntryEncoder, indent=4)
+        return jsonified_d
+        
     except:
         print("Was not possible to retreive all entries")
 
@@ -49,7 +54,8 @@ def get_all_entries():
 def get_entry(target, value):
     try:
         entries = getTargetQuery(target,value)
-        return render_template("entriesdate.html", all_entries=entries)
+        jsonified_d = json.dumps(entries, cls=EntryEncoder, indent=4)
+        return jsonified_d
     except:
         print("error occured when retriving specific date")
 
@@ -57,9 +63,9 @@ def get_entry(target, value):
 def get_statistics(target, value):
 
     try:
-        all_entries = getTotalEntries()
         totalAvarage = getAvarage(target, value)
-        return render_template("statistics.html", all_entries=all_entries, avarage=totalAvarage)
+        jsonified_d = f'{{"level of {target} " : {value}, " total" : {totalAvarage}}}'
+        return jsonified_d
     except:
         print("error getting requesting statistics")
 
