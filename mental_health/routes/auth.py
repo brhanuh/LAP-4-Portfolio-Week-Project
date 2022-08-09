@@ -1,68 +1,42 @@
 import json
-from flask import Blueprint, jsonify, request, abort, render_template
+from flask import Blueprint, request, jsonify
 import bcrypt
+from datetime import datetime, timedelta, timezone
+
 from sqlalchemy.exc import IntegrityError
 from ..models.user import User
 from ..database.db import db
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import create_access_token, unset_jwt_cookies
+from flask_jwt_extended import get_jwt_identity, get_jwt
 from flask_jwt_extended import jwt_required
+from flask_login import login_user, logout_user, login_required
+from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_routes = Blueprint("auth", __name__)
-token_route = Blueprint("token", __name__)
-login_route = Blueprint("login", __name__)
-
-# Creating a route to authenticate your users and return JWTs. The
-# create_access_token() function is used to actually generate the JWT.
-@token_route.route("/token", methods=["POST"])
-def token():
-    if request.method == "POST":
-        username = request.json.get("username", None)
-        password = request.json.get("password", None)
-
-        if username != "test" or password != "test":
-            return jsonify({"msg": "Bad username or password"}), 401
-
-        access_token = create_access_token(identity=username)
-
-        return jsonify(access_token=access_token)
-
-
 
 @auth_routes.route("/register", methods = ["POST", "GET"])
 def register():
-    try:
-        if request.method == "POST":
-            username = request.json.get('username',None)
-            email = request.json.get('email',None)
-            password = request.json.get('password',None)
+    if request.method == 'POST':
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
 
-            if not username:
-                return 'Missing username', 400
-            if not email:
-                    return 'Missing email', 400
-            if not password:
-                return 'Missing password', 400
+        #checking if a user exists
+        user_email = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
 
-            # user_exists = User.query.filter_by(email=email).first() is not None
+        if user_email:
+            return 'email already exists'
+        elif user:
+            return 'username already exists'
 
-            # if user_exists:
-            #     abort(409)
-
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            new_user = User(username=username, email=email, hash_password=hashed_password)
-            db.session.add(new_user)
-            db.session.commit()
-
-            return "user created"
-        
-    except AttributeError:
-        return "Please provide email and pass as JSON", 400
-    except IntegrityError:
-        return "The User is already registered", 400
-        
-   
-    if request.method == "GET":
+        hashed_pass = generate_password_hash(password, method='sha256')
+        new_user = User(username=username, email=email, hash_password=hashed_pass)
+        db.session.add(new_user)
+        db.session.commit()
+        return 'User Created'
+    
+    if request.method == 'GET':
         users = User.query.all()
 
         all_data =[]
@@ -73,31 +47,53 @@ def register():
                 "email": user.email, 
                 "password":user.hash_password})
         return all_data
-                   
-               
-            
 
 
-# @login_route.route("/login", methods=['POST'])
-# def login():
-#     email = request.json.get('email', None)
-#     password = request.json.get('password', None)
+@auth_routes.route("/login", methods=["POST"])
+def login():
+    if request.method == 'POST':
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-#     if not email:
-#         return 'Missing email', 400
-#     if not password:
-#         return 'Missing password', 400
+        user = User.query.filter_by(username=username).first()
+
+        #hash password first and then the userinput password
+        if user:
+            if not check_password_hash(user.hash_password, password):
+                return 'incorrect password'
+            # login_user(user, remember=True)
+            # return 'user logged in' 
+            access_token = create_access_token(identity=username)
+            response = {"access_token":access_token}
+            return response 
+        return 'no such user'
+        
     
-#     #query the database
-#     user = User.query.filter_by(email=email).first()
-#     #if the user does not exist 
-#     if not user:
-#         return f'User Not Found', 404
+@auth_routes.route("/logout", methods=["POST"])
+def logout():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
+
+# @auth_routes.route("/logout", methods = ["POST"])
+# def logout():
+#     logout_user()
+#     return 'user logged out'
+#     #redirect(url_for(""))
     
-#     #if the user exists, check if passwords match
-#     if bcrypt.checkpw(password.encode('utf-8'), user.hash_password):
-#         return f'Welcome back'
-#     else:
-#         return "Wrong password!"
-    
-            
+
+   
+
+##### experimenting with a protected endpoint #####             
+
+@auth_routes.route('/profile')
+@jwt_required()
+def my_profile():
+    response_body = {
+        "name": "Nagato",
+        "about" :"Hello! I'm a full stack developer that loves python and javascript"
+    }
+
+    return response_body 
+
+
