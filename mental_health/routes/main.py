@@ -34,7 +34,7 @@ def new_entry():
         db.session.add(new_entry)
         db.session.commit()
 
-        return "Created new entry"
+        return "Created new entry", 200
     except:
         print("error occured")
 
@@ -44,7 +44,7 @@ def get_all_entries():
 
         all_entries = Entry.query.all()
         jsonified_d = json.dumps(all_entries, cls=EntryEncoder, indent=4)
-        return jsonified_d
+        return jsonified_d , 200
         
     except:
         print("Was not possible to retreive all entries")
@@ -87,4 +87,4 @@ def handle_500(err):
 
 @main_routes.route("/", methods=["GET"])
 def index():
-    return {"name": "Hello there"}
+    return {"name": "db"}, 200
