@@ -13,9 +13,12 @@ psycopg2 = "*"
 colorama = "*"
 flask-jwt-extended = "*"
 bcrypt = "*"
+requests = "*"
 flask-login = "*"
 
 [dev-packages]
+pytest = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.10"
@@ -24,3 +27,5 @@ python_version = "3.10"
 init_db = "python init_db.py"
 dev = "flask run -p ${PORT}"
 start = "gunicorn mental_health:app"
+test="pytest ."
+coverage = "pytest --cov-report term-missing --cov=."
