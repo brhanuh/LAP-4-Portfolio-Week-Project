@@ -1,3 +1,4 @@
+import json
 from ..database.db import db, datetime
 
 class Entry(db.Model):
@@ -19,3 +20,12 @@ class Entry(db.Model):
     def __repr__(self):
         return 'Entry ' + str(self.id)
 
+class EntryEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Entry):
+            return {'date_posted' : o.date_posted, 'mood' : o.mood, 'energy' : o.energy,
+            'depression' : o.depression, 'irritability' : o.irritability, 'motivation' : o.motivation,
+            'stress' : o.stress, 'appetatite' : o.appetite, 'concentration' : o.concentration, 'diet' : o.diet,
+            'enter' : o.enter, 'social' : o.social}
+
+        return super().default(o)
