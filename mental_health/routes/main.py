@@ -47,6 +47,19 @@ def new_entry():
     except:
         print("error occured")
 
+
+@main_routes.route("/username", methods=["GET"])
+@jwt_required()
+def get_user():
+    try:
+
+        user = get_jwt_identity()
+        jsonified_d = f'{{"username" : {user}}}'
+        return jsonified_d , 200
+        
+    except:
+        print("Was not possible to retreive all entries")
+
 @main_routes.route("/entries", methods=["GET"])
 @jwt_required()
 def get_all_entries():
