@@ -90,10 +90,6 @@ def get_user_week(target, value):
     except:
         print("error getting requesting statistics")
 
-@main_routes.route("/recommendations", methods=["GET"])
-def get_recommendations():
-    return "get recommendations from the users who are feeling same way as you"
-
 
 @main_routes.errorhandler(exceptions.NotFound)
 def handle_404(err):
