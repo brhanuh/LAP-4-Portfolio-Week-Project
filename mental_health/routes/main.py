@@ -79,12 +79,13 @@ def get_statistics(target, value):
     except:
         print("error getting requesting statistics")
 
-@main_routes.route("/week_stats/<target>/<value>", methods=["GET"])
+@main_routes.route("/week_stats/<target>", methods=["GET"])
 @jwt_required()
-def get_user_week(target, value):
+def get_user_week(target):
 
     try:
-        week_entries = getUserWeek(target, value)
+        week = datetime.strftime(datetime.today(), "%W")
+        week_entries = getUserWeek(target, week)
         jsonified_d = json.dumps(week_entries, cls=EntryEncoder, indent=4)
         return jsonified_d
     except:
