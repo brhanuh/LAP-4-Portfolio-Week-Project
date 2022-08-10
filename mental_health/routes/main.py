@@ -3,7 +3,7 @@ from flask import Blueprint, request, render_template, jsonify
 from ..database.db import db, datetime
 from ..models.user import User
 from ..models.entry import Entry, EntryEncoder
-from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage
+from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage, getUserWeek
 from werkzeug import exceptions
 from flask_jwt_extended import create_access_token, unset_jwt_cookies
 from flask_jwt_extended import get_jwt_identity, get_jwt
@@ -17,12 +17,12 @@ def new_entry():
 
     
     try:
-        current_user = get_jwt_identity()
+        user = get_jwt_identity()
         data = request.get_json()
         date = datetime.strftime(datetime.today(), "%d-%m-%Y")
         day = datetime.strftime(datetime.today(), "%A")
         week = datetime.strftime(datetime.today(), "%W")
-        time = datetime.strftime(datetime.today(), "%H")
+        time = datetime.strftime(datetime.today(), "%H-%M")
         mood = data["mood"]
         energy = data["energy"]
         depression = data["depression"]
@@ -35,8 +35,8 @@ def new_entry():
         enter = data["enter"]
         social = data["social"]
 
-        new_entry = Entry(user=current_user, date_posted=date, day=day, week=week,
-        time=time, mood=mood, energy=energy, depression=depression, irritability=irritability, motivation=motivation,
+        new_entry = Entry(user=user, date_posted=date,
+        day=day, week=week, time=time, mood=mood, energy=energy, depression=depression, irritability=irritability, motivation=motivation,
         stress=stress, appetite=appetite, concentration=concentration, diet=diet,
         enter=enter, social=social)
 
@@ -52,15 +52,14 @@ def new_entry():
 def get_all_entries():
     try:
 
-        all_entries = Entry.query.all()
+        all_entries = getTotalEntries()
         jsonified_d = json.dumps(all_entries, cls=EntryEncoder, indent=4)
         return jsonified_d , 200
         
     except:
         print("Was not possible to retreive all entries")
 
-@main_routes.route("/entry/<target>/<value>", methods=["GET"])   # for now i retrieving specific date
-@jwt_required()
+@main_routes.route("/entry/<target>/<value>", methods=["GET"])   # for now i retrieving specific target
 def get_entry(target, value):
     try:
         entries = getTargetQuery(target,value)
@@ -76,6 +75,17 @@ def get_statistics(target, value):
     try:
         totalAvarage = getAvarage(target, value)
         jsonified_d = f'{{"level of {target} " : {value}, " total" : {totalAvarage}}}'
+        return jsonified_d
+    except:
+        print("error getting requesting statistics")
+
+@main_routes.route("/stats/<target>/<value>", methods=["GET"])
+@jwt_required()
+def get_user_week(target, value):
+
+    try:
+        week_entries = getUserWeek(target, value)
+        jsonified_d = json.dumps(week_entries, cls=EntryEncoder, indent=4)
         return jsonified_d
     except:
         print("error getting requesting statistics")
@@ -105,4 +115,11 @@ def my_profile():
         "about" :"Hello! I'm a full stack developer that loves python and javascript"
     }
 
-    return response_body    
+    return response_body  
+
+
+
+      
+
+
+    # day=day, week=week, time=time,
