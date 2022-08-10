@@ -17,9 +17,12 @@ def new_entry():
 
     
     try:
-        user = "get_jwt_identity()"
+        user = get_jwt_identity()
         data = request.get_json()
         date = datetime.strftime(datetime.today(), "%d-%m-%Y")
+        day = datetime.strftime(datetime.today(), "%A")
+        week = datetime.strftime(datetime.today(), "%W")
+        time = datetime.strftime(datetime.today(), "%H-%M")
         mood = data["mood"]
         energy = data["energy"]
         depression = data["depression"]
@@ -33,7 +36,7 @@ def new_entry():
         social = data["social"]
 
         new_entry = Entry(user=user, date_posted=date,
-        mood=mood, energy=energy, depression=depression, irritability=irritability, motivation=motivation,
+        day=day, week=week, time=time, mood=mood, energy=energy, depression=depression, irritability=irritability, motivation=motivation,
         stress=stress, appetite=appetite, concentration=concentration, diet=diet,
         enter=enter, social=social)
 
@@ -120,9 +123,7 @@ def my_profile():
 
 
 
-    # day = datetime.strftime(datetime.today(), "%A")
-    #     week = datetime.strftime(datetime.today(), "%W")
-    #     time = datetime.strftime(datetime.today(), "%H-%M")  
+      
 
 
     # day=day, week=week, time=time,
