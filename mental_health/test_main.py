@@ -14,10 +14,6 @@ class Flask(unittest.TestCase):
     
     def test_my_profile(self):
         tester = app.test_client(self)
-        access_token = create_access_token('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY2MDA1MjY1NiwianRpIjoiMDFiODM5ZWYtNzRlZS00NDBlLWJiZjktYmI1MGZiMzAwNjIzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImhvbGFob3BlIiwibmJmIjoxNjYwMDUyNjU2LCJleHAiOjE2NjAwNTYyNTZ9.HG6tIyR3v8X4eSsszAyLv7Qe2LvPizOpM0g8edbF6h8')
-        headers = {
-            'authorization': 'Bearer'.format(access_token)
-        }
         response = tester.get("/profile")
         statuscode = response.status_code
         self.assertEqual(statuscode, 200)
