@@ -12,15 +12,24 @@ recom_route = Blueprint("recommendation", __name__)
 @recom_route.route("/", methods=["GET"])
 @jwt_required()
 def all__posts():
-    return 'testing /recommendations'
-    # posts = Post.query.all()
-
-    # post_data = []
-    # for post in posts:
-
     
+    posts = Post.query.all()
+
+    get_data = []
+    for post in posts:
+        get_data.append({
+                "posted_user": post.user.username,
+                "id": post.id, 
+                "type": post.type, 
+                "source": post.source, 
+                "text":post.text,
+                "date_created":post.date_created
+                })
+    return get_data
+
+
 #logged in user is able to create a post
-@recom_route.route("/post", methods=["POST","GET"])
+@recom_route.route("/post", methods=["POST"])
 @jwt_required()
 def create_post():
     if request.method == 'POST':
@@ -35,8 +44,7 @@ def create_post():
         db.session.commit()
         return 'post created'
 
-    if request.method == 'GET':
-        return 'should redirect to the all posts page'
+                
 
 
 
