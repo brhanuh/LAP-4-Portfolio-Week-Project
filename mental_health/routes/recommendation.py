@@ -8,8 +8,19 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 recom_route = Blueprint("recommendation", __name__)
 
+# show all posts by all users
+@recom_route.route("/", methods=["GET"])
+@jwt_required()
+def all__posts():
+    return 'testing /recommendations'
+    # posts = Post.query.all()
+
+    # post_data = []
+    # for post in posts:
+
+    
 #logged in user is able to create a post
-@recom_route.route("/posts", methods=["POST","GET"])
+@recom_route.route("/post", methods=["POST","GET"])
 @jwt_required()
 def create_post():
     if request.method == 'POST':
@@ -26,7 +37,6 @@ def create_post():
 
     if request.method == 'GET':
         return 'should redirect to the all posts page'
-                
 
 
 
