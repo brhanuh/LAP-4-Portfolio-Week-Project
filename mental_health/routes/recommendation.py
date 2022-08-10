@@ -1,9 +1,8 @@
-from cgi import test
 import json
 from mental_health.models.user import User, Post
 from xml.dom import NotFoundErr
 from flask import Blueprint, request
-from ..database.db import db, datetime
+from ..database.db import db
 from werkzeug import exceptions
 from flask_jwt_extended import jwt_required, get_jwt_identity
 

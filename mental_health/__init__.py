@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from os import environ
-from flask import Flask, render_template, request
+from flask import Flask
 from datetime import timedelta
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager

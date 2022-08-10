@@ -1,6 +1,5 @@
 import json
 from flask import Blueprint, request, jsonify
-from xml.dom import NotFoundErr
 from ..models.user import User
 from ..database.db import db
 from flask_jwt_extended import create_access_token, unset_jwt_cookies
@@ -36,19 +35,8 @@ def register():
     except Exception as err:
         print(err)
     
-    # if request.method == 'GET':
-    #     users = User.query.all()
 
-    #     all_data =[]
-    #     for user in users:
-    #         all_data.append({
-    #             "id": user.id, 
-    #             "username": user.username, 
-    #             "email": user.email, 
-    #             "password":user.hash_password})
-    #     return all_data
-
-
+#Login route
 @auth_routes.route("/login", methods=["POST"])
 def login():
     try:
