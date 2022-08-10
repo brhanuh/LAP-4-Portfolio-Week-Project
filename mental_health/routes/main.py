@@ -74,7 +74,7 @@ def get_statistics(target, value):
 
     try:
         totalAvarage = getAvarage(target, value)
-        jsonified_d = f'{{"level of {target} " : {value}, " total" : {totalAvarage}}}'
+        jsonified_d = f'{{"{target}" : {value}, "total" : {totalAvarage}}}'
         return jsonified_d
     except:
         print("error getting requesting statistics")
