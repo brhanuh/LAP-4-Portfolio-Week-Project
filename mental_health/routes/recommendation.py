@@ -13,7 +13,7 @@ recom_route = Blueprint("recommendation", __name__)
 @jwt_required()
 def all__posts():
     try:
-        posts = Post.query.all()
+        posts = Post.query.order_by(Post.id.desc()).all()
 
         get_data = []
         for post in posts:
@@ -38,7 +38,7 @@ def post_byid(username):
         user = User.query.filter_by(username=username).first()
 
         if user.username == get_jwt_identity():
-            posts = Post.query.all()
+            posts = Post.query.order_by(Post.date_created.desc()).all()
 
             user_posts = []
             for post in posts:
