@@ -79,7 +79,7 @@ def get_statistics(target, value):
     except:
         print("error getting requesting statistics")
 
-@main_routes.route("/stats/<target>/<value>", methods=["GET"])
+@main_routes.route("/week_stats/<target>/<value>", methods=["GET"])
 @jwt_required()
 def get_user_week(target, value):
 
