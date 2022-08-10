@@ -1,12 +1,8 @@
 from ..database.db import db
 from time import timezone
 from sqlalchemy.sql import func
-from uuid import uuid4
-from flask_login import UserMixin
 
 
-# def get_uuid():
-#     return uuid4().hex
 
 class User(db.Model):
 
