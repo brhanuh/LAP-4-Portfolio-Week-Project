@@ -3,7 +3,7 @@ from flask import Blueprint, request, render_template, jsonify
 from ..database.db import db, datetime
 from ..models.user import User
 from ..models.entry import Entry, EntryEncoder
-from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage, getUserWeek
+from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage, getUserWeek, getMostRecentFeeling
 from werkzeug import exceptions
 from flask_jwt_extended import create_access_token, unset_jwt_cookies
 from flask_jwt_extended import get_jwt_identity, get_jwt
@@ -92,17 +92,18 @@ def get_statistics(target, value):
     except:
         print("error getting requesting statistics")
 
-@main_routes.route("/week_stats/<target>", methods=["GET"])
+
+@main_routes.route("/recent/<target>", methods=["GET"])
 @jwt_required()
-def get_user_week(target):
+def get_recent_entry(target):
 
     try:
-        week = datetime.strftime(datetime.today(), "%W")
-        week_entries = getUserWeek(target, week)
-        jsonified_d = json.dumps(week_entries, cls=EntryEncoder, indent=4)
+        recent_entry = getMostRecentFeeling(target)   
+        jsonified_d = json.dumps(recent_entry, cls=EntryEncoder, indent=4)
         return jsonified_d
     except:
         print("error getting requesting statistics")
+
 
 
 @main_routes.errorhandler(exceptions.NotFound)

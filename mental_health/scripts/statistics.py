@@ -1,5 +1,6 @@
 from ..database.db import db
 from ..models.entry import Entry
+from sqlalchemy.sql.functions import func
 
 def getTotalEntries():
     try:
@@ -87,4 +88,12 @@ def getUserWeek(user, week):
     else:
         print("user or week is empty")
 
+
+def getMostRecentFeeling(user):
+
+    targetUser = getTargetData('user')
+    
+    result = Entry.query.filter(targetUser == user).order_by(Entry.id.desc()).first()
+
+    return result
 
