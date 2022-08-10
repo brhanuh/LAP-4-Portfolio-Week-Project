@@ -3,7 +3,7 @@ from flask import Blueprint, request, render_template, jsonify
 from ..database.db import db, datetime
 from ..models.user import User
 from ..models.entry import Entry, EntryEncoder
-from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage
+from ..scripts.statistics import getTargetQuery, getTotalEntries, getAvarage, getUserWeek
 from werkzeug import exceptions
 from flask_jwt_extended import create_access_token, unset_jwt_cookies
 from flask_jwt_extended import get_jwt_identity, get_jwt
@@ -17,12 +17,12 @@ def new_entry():
 
     
     try:
-        current_user = get_jwt_identity()
+        current_user = "get_jwt_identity()"
         data = request.get_json()
         date = datetime.strftime(datetime.today(), "%d-%m-%Y")
         day = datetime.strftime(datetime.today(), "%A")
         week = datetime.strftime(datetime.today(), "%W")
-        time = datetime.strftime(datetime.today(), "%H")
+        time = datetime.strftime(datetime.today(), "%H-%M")
         mood = data["mood"]
         energy = data["energy"]
         depression = data["depression"]
@@ -52,15 +52,14 @@ def new_entry():
 def get_all_entries():
     try:
 
-        all_entries = Entry.query.all()
+        all_entries = getTotalEntries()
         jsonified_d = json.dumps(all_entries, cls=EntryEncoder, indent=4)
         return jsonified_d , 200
         
     except:
         print("Was not possible to retreive all entries")
 
-@main_routes.route("/entry/<target>/<value>", methods=["GET"])   # for now i retrieving specific date
-@jwt_required()
+@main_routes.route("/entry/<target>/<value>", methods=["GET"])   # for now i retrieving specific target
 def get_entry(target, value):
     try:
         entries = getTargetQuery(target,value)
@@ -80,17 +79,20 @@ def get_statistics(target, value):
     except:
         print("error getting requesting statistics")
 
+@main_routes.route("/stats/<target>/<value>", methods=["GET"])
+@jwt_required()
+def get_user_week(target, value):
+
+    try:
+        week_entries = getUserWeek(target, value)
+        jsonified_d = json.dumps(week_entries, cls=EntryEncoder, indent=4)
+        return jsonified_d
+    except:
+        print("error getting requesting statistics")
+
 @main_routes.route("/recommendations", methods=["GET"])
 def get_recommendations():
     return "get recommendations from the users who are feeling same way as you"
-
-
-
-# @main_routes.route("/recommentdations/<int:id>")
-# def post_recommendation(id):
-#     recommendation = 
-
-
 
 
 @main_routes.errorhandler(exceptions.NotFound)

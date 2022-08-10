@@ -50,6 +50,14 @@ def getTargetData(targetFeeling):
                 return Entry.social
             case "date_posted":
                 return Entry.date_posted
+            case "user":
+                return Entry.user
+            case "week":
+                return Entry.week
+            case "day":
+                return Entry.day
+            case "time":
+                return Entry.time
             case _:
                 return Entry.mood
     else:
@@ -65,6 +73,18 @@ def getTargetQuery(target, value):
         except:
             print("problem retriving date from database")
     else:
-        print("date is empty")
+        print("target is empty")
+
+def getUserWeek(user, week):
+    if user != " " or week !=" ":
+        targetData = getTargetData('week')
+        targetUser = getTargetData('user')
+        try:
+            target = Entry.query.filter(targetUser == user, targetData ==  week).all()
+            return target
+        except:
+            print("problem retriving date from database")
+    else:
+        print("user or week is empty")
 
 
