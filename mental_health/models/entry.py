@@ -1,14 +1,12 @@
 import json
+from time import time
 from ..database.db import db, datetime
 
 class Entry(db.Model):
 
     user = db.Column(db.String(100), nullable=False)
     id = db.Column(db.Integer, primary_key=True)
-    date_posted = db.Column(db.String(50), nullable=False)
-    day = db.Column(db.String(50), nullable=False)
-    week = db.Column(db.String(50), nullable=False)
-    time = db.Column(db.String(50), nullable=False)
+    date_posted = db.Column(db.String(100), nullable=False)
     mood = db.Column(db.Integer, nullable=False)
     energy = db.Column(db.Integer, nullable=False)
     depression = db.Column(db.Integer, nullable=False)
@@ -33,3 +31,9 @@ class EntryEncoder(json.JSONEncoder):
             'enter' : o.enter, 'social' : o.social}
 
         return super().default(o)
+
+
+
+# day = db.Column(db.String(100), nullable=False)
+#     week = db.Column(db.String(100), nullable=False)
+#     time = db.Column(db.String(100), nullable=False)
