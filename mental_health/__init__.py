@@ -4,7 +4,7 @@ from flask import Flask, render_template, request
 from datetime import timedelta
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
-from .models.user import User, Post
+from .models.user import User
 
 
 from flask_cors import CORS

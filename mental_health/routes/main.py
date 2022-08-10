@@ -107,16 +107,6 @@ def handle_500(err):
 
 
 
-@main_routes.route('/profile')
-@jwt_required()
-def my_profile():
-    response_body = {
-        "name": "Nagato",
-        "about" :"Hello! I'm a full stack developer that loves python and javascript"
-    }
-
-    return response_body  
-
 
 
       
