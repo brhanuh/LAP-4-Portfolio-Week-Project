@@ -10,6 +10,7 @@ recom_route = Blueprint("recommendation", __name__)
 
 # show all posts by all users
 @recom_route.route("/", methods=["GET"])
+@jwt_required()
 def all__posts():
     return 'testing /recommendations'
     # posts = Post.query.all()
