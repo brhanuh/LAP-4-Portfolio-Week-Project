@@ -1,38 +1,67 @@
-from cgi import test
 import json
 from mental_health.models.user import User, Post
-from flask import Blueprint, request, render_template, jsonify, session
-from ..database.db import db, datetime
-# from flask_login import login_user, logout_user, login_required, current_user
+from xml.dom import NotFoundErr
+from flask import Blueprint, request
+from ..database.db import db
+from werkzeug import exceptions
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 recom_route = Blueprint("recommendation", __name__)
 
-# show all posts by all users
+# show all posts by all users (must be logged in)
 @recom_route.route("/", methods=["GET"])
 @jwt_required()
 def all__posts():
-    
-    posts = Post.query.all()
+    try:
+        posts = Post.query.all()
 
-    get_data = []
-    for post in posts:
-        get_data.append({
-                "posted_user": post.user.username,
-                "id": post.id, 
-                "type": post.type, 
-                "source": post.source, 
-                "text":post.text,
-                "date_created":post.date_created
-                })
-    return get_data
+        get_data = []
+        for post in posts:
+            get_data.append({
+                    "posted_user": post.user.username,
+                    "id": post.id, 
+                    "type": post.type, 
+                    "source": post.source, 
+                    "text":post.text,
+                    "date_created":post.date_created
+                    })
+        return get_data
+    
+    except NotFoundErr as err:
+        raise exceptions.NotFound
+
+#view all posts by username, must be logged in
+@recom_route.route("/post/<string:username>", methods=['GET'])
+@jwt_required()
+def post_byid(username):
+    try:
+        user = User.query.filter_by(username=username).first()
+
+        if user.username == get_jwt_identity():
+            posts = Post.query.all()
+
+            user_posts = []
+            for post in posts:
+                if post.user.username == get_jwt_identity():
+                    user_posts.append({
+                        "posted_user_POST": post.user.username,
+                        "id": post.id, 
+                        "type": post.type, 
+                        "source": post.source, 
+                        "text":post.text,
+                        "date_created":post.date_created,
+                    })
+            return user_posts
+    
+    except NotFoundErr as err:
+        raise exceptions.NotFound
 
 
 #logged in user is able to create a post
 @recom_route.route("/post", methods=["POST"])
 @jwt_required()
 def create_post():
-    if request.method == 'POST':
+    try:
         type = request.json.get('type')
         source = request.json.get('source')
         text = request.json.get('text')
@@ -44,7 +73,20 @@ def create_post():
         db.session.commit()
         return 'post created'
 
-                
+    except Exception as err:
+        print(err)
 
+                
+@recom_route.errorhandler(exceptions.NotFound)
+def handle_404(err):
+    return {'error':{err}}, 404
+
+@recom_route.errorhandler(exceptions.BadRequest)
+def handle_400(err):
+    return {'error':{err}}, 400
+
+@recom_route.errorhandler(exceptions.InternalServerError)
+def handle_500(err):
+    return {'error':{err}}, 500
 
 
