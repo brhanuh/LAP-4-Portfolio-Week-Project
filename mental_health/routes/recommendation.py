@@ -68,7 +68,7 @@ def create_post():
 
         user = User.query.filter_by(username=get_jwt_identity()).first()
        
-        new_post = Post(type=type, source=source, text=text, creator=user.id)
+        new_post = Post(type=type, source=source, text=text, creator=user.username)
         db.session.add(new_post)
         db.session.commit()
         return 'post created'
