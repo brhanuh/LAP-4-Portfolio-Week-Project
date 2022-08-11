@@ -3,8 +3,6 @@ from os import environ
 from flask import Flask
 from datetime import timedelta
 from flask_jwt_extended import JWTManager
-from flask_login import LoginManager
-from .models.user import User
 
 
 from flask_cors import CORS
@@ -45,13 +43,6 @@ app.register_blueprint(main_routes)
 app.register_blueprint(auth_routes)
 app.register_blueprint(recom_route, url_prefix = '/recommendations')
 
-login_manager = LoginManager()
-login_manager.login_view = "auth.login"
-login_manager.init_app(app)
-
-@login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
 
 ## Main
 

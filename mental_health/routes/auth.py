@@ -30,7 +30,7 @@ def register():
         new_user = User(username=username, email=email, hash_password=hashed_pass)
         db.session.add(new_user)
         db.session.commit()
-        return 'User Created'
+        return 'User Created', 201
     
     except Exception as err:
         print(err)

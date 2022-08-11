@@ -17,6 +17,6 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True)
     type = db.Column(db.String(100), default="")
     source = db.Column(db.String(100), default="")
-    text = db.Column(db.String(100), default="")
+    text = db.Column(db.Text(), default="")
     date_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    creator = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    creator = db.Column(db.String(50), db.ForeignKey('user.username'), nullable=False)
