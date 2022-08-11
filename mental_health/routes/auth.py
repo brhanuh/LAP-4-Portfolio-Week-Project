@@ -32,8 +32,8 @@ def register():
         db.session.commit()
         return 'User Created', 201
     
-    except Exception as err:
-        print(err)
+    except:
+        raise exceptions.InternalServerError()
     
 
 #Login route
@@ -43,30 +43,46 @@ def login():
         username = request.json.get("username")
         password = request.json.get("password")
 
+        if not username:
+            raise exceptions.BadRequest('No username provided')
+        if not password:
+            raise exceptions.BadRequest('No password provided')
+
         user = User.query.filter_by(username=username).first()
 
         #hash password first and then the userinput password for check_password_hash
         if user:
             if not check_password_hash(user.hash_password, password):
-                return 'incorrect password'
+                raise exceptions.Unauthorized('Incorrect password.')
             
         #Create access token if the user input password and database password(hashed) are correct
             access_token = create_access_token(identity=username)
             response = {"access_token":access_token, "user_id": user.id, "username": user.username}
             return response 
-        return 'no such user'
+        raise exceptions.BadRequest()
     
-    except Exception as err:
-        print(err)
-
-@auth_routes.errorhandler(exceptions.NotFound)
-def handle_404(err):
-    return {'error':{err}}, 404
+    except exceptions.BadRequest:
+        raise exceptions.BadRequest()
+    except exceptions.Unauthorized:
+        raise exceptions.Unauthorized('Incorrect password.')
+    except:
+        raise exceptions.InternalServerError()
 
 @auth_routes.errorhandler(exceptions.BadRequest)
 def handle_400(err):
-    return {'error':{err}}, 400
+    return {'message': f'Oops! {err}'}, 400
+
+
+@auth_routes.errorhandler(exceptions.Unauthorized)
+def handle_401(err):
+    return {'message': f'Not authorized! {err}'}, 401
+
+
+@auth_routes.errorhandler(exceptions.NotFound)
+def handle_404(err):
+    return {'message': f'Oops! {err}'}, 404
+
 
 @auth_routes.errorhandler(exceptions.InternalServerError)
 def handle_500(err):
-    return {'error':{err}}, 500
+    return {'message': f"It's not you, it's us"}, 500
