@@ -106,17 +106,25 @@ def get_recent_entry(target):
 
 
 
-@main_routes.errorhandler(exceptions.NotFound)
-def handle_404(err):
-    return {'message': f'Oops! {err}'}, 404
-
 @main_routes.errorhandler(exceptions.BadRequest)
 def handle_400(err):
     return {'message': f'Oops! {err}'}, 400
 
+
+@main_routes.errorhandler(exceptions.Unauthorized)
+def handle_401(err):
+    return {'message': f'Not authorized! {err}'}, 401
+
+
+@main_routes.errorhandler(exceptions.NotFound)
+def handle_404(err):
+    return {'message': f'Oops! {err}'}, 404
+
+
 @main_routes.errorhandler(exceptions.InternalServerError)
 def handle_500(err):
-    return {'message': f"SERVER ERROR,  {err}"}, 500
+    return {'message': f"It's not you, it's us {err}"}, 500
+
 
 
 
