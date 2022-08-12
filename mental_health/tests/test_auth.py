@@ -1,59 +1,27 @@
-from flask import Flask
-import unittest
-import requests
-from ..database.db import db
+import json
 
-class appDBTests(unittest.TestCase):
 
-    def setUp(self):
-        """
-        Creates a new database for the unit test to use
-        """
-        self.app = Flask(__name__)
-        db.init_app(self.app)
-        with self.app.app_context():
-            db.create_all()
+def test_register(api):
+    #converts a python object into a json string
+    user_data = json.dumps({'username': "tester", 'password': 'test'})
+    mock_headers = {'Content-Type': 'application/json'}
+    app = api.post('/auth/register', data=user_data, headers=mock_headers)
 
-    def tearDown(self):
-        """
-        Ensures that the database is emptied for next unit test
-        """
-        self.app = Flask(__name__)
-        db.init_app(self.app)
-        with self.app.app_context():
-            db.drop_all()
+def test_login(api):
+    user_data = json.dumps({'username': "tester",'password': 'test'})
+    mock_headers = {'Content-Type': 'application/json'}
+    app= api.post('/login', data=user_data, headers=mock_headers)
 
-# functional tests
-    
+def test_400(api):
+    app = api.post('/login')
+    assert app.status == '400 BAD REQUEST'
 
-class ApiTest(unittest.TestCase):
-    api_url = "http://127.0.0.1:5000"
-    register_url = "{}/register".format(api_url)
-    login_url = "{}/login".format(api_url)
+def test_401(api):
+    app = api.post('/login')
+    user_data = json.dumps({'username': "tester", 'password': ''})
+    mock_headers = {'Content-Type': 'application/json'}
+    app = api.post('/login', data=user_data, headers=mock_headers)
 
-    register_obj = {
-        "id": 100,
-        "username": "boom",
-	    "email": "boom@gmail.com",
-	    "password": "boomba"
-    }
-
-    login_obj = {
-        "username": "baz",
-        "password": "bak"
-    }
-
-    def test_register_get(self):
-        req = requests.get(ApiTest.register_url)
-        self.assertEqual(req.status_code, 405)
-
-    def test_register_post(self):
-        reqs = requests.post(ApiTest.register_url, json = ApiTest.register_obj)
-        self.assertEqual(reqs.status_code, 201)
-
-    def test_login(self):
-        reqs = requests.post(ApiTest.login_url, json = ApiTest.login_obj)
-        self.assertEqual(reqs.status_code, 200)
-
-if __name__ == "__main__":
-     unittest.main()
+def test_404(api):
+    app = api.get('/dakaz')
+    assert app.status == '404 NOT FOUND'

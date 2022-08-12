@@ -77,16 +77,23 @@ def create_post():
         print(err)
 
                 
-@recom_route.errorhandler(exceptions.NotFound)
-def handle_404(err):
-    return {'error':{err}}, 404
-
 @recom_route.errorhandler(exceptions.BadRequest)
 def handle_400(err):
-    return {'error':{err}}, 400
+    return {'message': f'Oops! {err}'}, 400
+
+
+@recom_route.errorhandler(exceptions.Unauthorized)
+def handle_401(err):
+    return {'message': f'Not authorized! {err}'}, 401
+
+
+@recom_route.errorhandler(exceptions.NotFound)
+def handle_404(err):
+    return {'message': f'Oops! {err}'}, 404
+
 
 @recom_route.errorhandler(exceptions.InternalServerError)
 def handle_500(err):
-    return {'error':{err}}, 500
+    return {'message': f"It's not you, it's us {err}"}, 500
 
 
