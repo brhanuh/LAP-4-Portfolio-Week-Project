@@ -85,4 +85,4 @@ def handle_404(err):
 
 @auth_routes.errorhandler(exceptions.InternalServerError)
 def handle_500(err):
-    return {'message': f"It's not you, it's us"}, 500
+    return {'message': f"It's not you, it's us {err}"}, 500
