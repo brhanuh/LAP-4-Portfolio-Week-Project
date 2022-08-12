@@ -1,7 +1,7 @@
-# from pip import main
-# import pytest
-# from ..routes.main import 
-# from models.entry import Entry
+import pytest
+from mental_health import app
+# from .models.entry import Entry
+from .models.user import User, Post
 
 # @pytest.fixture
 # def api(monkeypatch):
@@ -14,4 +14,16 @@
 #     ]
 #     api = main_routes.app.test_client()
 #     return api
+
+
+@pytest.fixture
+def api():
+    client = app.test_client()
+    return client
+
+@pytest.fixture(scope = 'module')
+def new_user():
+    test_user = User(username="test_usernames",email="user_emails", hash_password="test_passwords")
+    return test_user
+
 
